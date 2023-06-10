@@ -19,18 +19,32 @@ jobs:
         with:
           go-version: 1.20
 
-      - name: Watch for File Changes
-        id: file-changes
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            go:
-              - '**/*.go'
-
-      - name: Display Changed Files
+      - name: Determine changed files
+        id: file_changes
         run: |
-          echo "Changed Files: ${{ steps.file-changes.outputs.all_changes }}"
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > changed_files.txt
 
-      - name: Run Tests
+      - name: Display File Name
+        id: display_file_name
         run: |
-          go test ${{ steps.changed-files.outputs.files }}
+          echo "::set-output name=files::$(cat changed_files.txt)"
+
+
+      - name: Run tests
+        run: go test -v ${{ needs.split_files.outputs.file }}
+
+      # - name: Watch for File Changes
+      #   id: file-changes
+      #   uses: dorny/paths-filter@v2
+      #   with:
+      #     filters: |
+      #       go:
+      #         - '**/*.go'
+
+      # - name: Display Changed Files
+      #   run: |
+      #     echo "Changed Files: ${{ steps.file-changes.outputs.all_changes }}"
+
+      # - name: Run Tests
+      #   run: |
+      #     go test ${{ steps.changed-files.outputs.files }}
