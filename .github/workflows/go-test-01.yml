@@ -22,7 +22,11 @@ jobs:
       - name: Get Changed Files
         id: changed-files
         run: |
-          echo "::set-output name=files::$(git diff --name-only HEAD^)"
+          if [[ $(git rev-parse HEAD) != $(git rev-parse HEAD^) ]]; then
+            echo "::set-output name=files::$(git diff --name-only HEAD^)"
+          else
+            echo "::set-output name=files::$(git diff --name-only HEAD)"
+          fi
 
       - name: Display Changed Files
         run: |
