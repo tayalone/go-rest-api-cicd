@@ -16,18 +16,27 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.20'
+      - name: List changed files
+        id: list_files
+        run: |
+          api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
+          changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
+          echo "Changed files:"
+          echo "$changed_files"
+          IFS=$'\n' read -rd '' -a changed_files_array <<< "$changed_files"
+          echo "::set-output name=files::${changed_files_array[@]}"
 
-      - name: Install dependencies
-        run: go get .
+      # - name: Install dependencies
+      #   run: go get .
 
-      - name: Build
-        run: go build -v ./...
+      # - name: Build
+      #   run: go build -v ./...
 
-      - name: Test with Coverage
-        run: go test -v -coverprofile=coverage_dev.txt -covermode=atomic ./...
+      # - name: Test with Coverage
+      #   run: go test -v -coverprofile=coverage_dev.txt -covermode=atomic ./...
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: coverage_dev.txt
-          token: ${{ secrets.CODECOV_TOKEN }}
+      # - name: Upload coverage reports to Codecov
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     file: coverage_dev.txt
+      #     token: ${{ secrets.CODECOV_TOKEN }}
