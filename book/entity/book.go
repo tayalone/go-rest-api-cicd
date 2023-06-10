@@ -4,7 +4,7 @@ type Book interface {
 	GetID() uint
 	GetTitle() string
 	IsAvailable() bool
-	GetEntity() BookEntity
+	// GetEntity() BookEntity
 }
 
 type BookEntity struct {
@@ -26,6 +26,6 @@ func (b *BookEntity) IsAvailable() bool {
 
 }
 
-func (b *BookEntity) GetEntity() BookEntity {
-	return *b
-}
+// func (b *BookEntity) GetEntity() BookEntity {
+// 	return *b
+// }
