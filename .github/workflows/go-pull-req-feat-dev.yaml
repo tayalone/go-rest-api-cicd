@@ -47,9 +47,13 @@ jobs:
 
       - name: Echo final files to test
         run: |
-          go_files="${{ steps.filter_go_files.outputs.go_files }}"
-          echo "Final files to test:"
-          echo "$go_files"
+          changed_files="${{ steps.list_files.outputs.files }}"
+          go_files=$(echo "$changed_files" | grep -E '\.go$' | grep '_test\.go$' || true)
+          if [ -z "$go_files" ]; then
+            echo "No Go test files changed. Skipping unit tests."
+            exit 0
+          fi
+          echo "::set-output name=go_files::$go_files"
 
       - name: Build
         run: go build -v ./...
