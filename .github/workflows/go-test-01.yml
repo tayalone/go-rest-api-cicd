@@ -19,19 +19,17 @@ jobs:
         with:
           go-version: 1.20
 
-      - name: Get Previous Commit
-        id: previous-commit
-        run: |
-          echo "::set-output name=commit::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }} --header 'Accept: application/vnd.github.v3+json' | jq -r '.parents[0].sha')"
-
-      - name: Get Changed Files
-        id: changed-files
-        run: |
-          echo "::set-output name=files::$(git diff --name-only ${{ steps.previous-commit.outputs.commit }})"
+      - name: Watch for File Changes
+        id: file-changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            go:
+              - '**/*.go'
 
       - name: Display Changed Files
         run: |
-          echo "Changed Files: ${{ steps.changed-files.outputs.files }}"
+          echo "Changed Files: ${{ steps.file-changes.outputs.all_changed }}"
 
       - name: Run Tests
         run: |
