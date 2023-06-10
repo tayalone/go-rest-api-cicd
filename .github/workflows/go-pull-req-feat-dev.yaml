@@ -64,6 +64,18 @@ jobs:
       #     fi
       #     echo "::set-output name=go_files::$go_files"
 
+      - name: List changed test files
+        id: list_files
+        run: |
+          commit_hash=$(git rev-parse HEAD)
+          changed_files=$(git diff --name-only $commit_hash HEAD | grep '_test.go')
+          echo "::set-output name=files::$changed_files"
+
+      - name: Echo changed test files
+        run: |
+          changed_files="${{ steps.list_files.outputs.files }}"
+          echo "Changed test files: $changed_files"
+          
       - name: Build
         run: go build -v ./...
 
