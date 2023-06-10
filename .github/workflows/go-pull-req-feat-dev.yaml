@@ -37,7 +37,7 @@ jobs:
       - name: Filter Go test files
         id: filter_go_files
         run: |
-          changed_files="${{ steps.list_files.outputs.files }}"
+          echo "$changed_files"
           go_files=$(echo "$changed_files" | grep -E '\.go$' | grep -v '_test\.go$' || true)
           if [ -z "$go_files" ]; then
             echo "No Go test files changed. Skipping unit tests."
