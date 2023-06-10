@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -119,41 +118,41 @@ func TestBookEntity_IsAvailable(t *testing.T) {
 	}
 }
 
-func TestBookEntity_GetEntity(t *testing.T) {
-	type fields struct {
-		ID      uint
-		Title   string
-		SoldOut bool
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   BookEntity
-	}{
-		{
-			name: "Book Not Available",
-			fields: fields{
-				ID:      1,
-				Title:   "Book 1",
-				SoldOut: true,
-			},
-			want: BookEntity{
-				ID:      1,
-				Title:   "Book 1",
-				SoldOut: true,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			b := &BookEntity{
-				ID:      tt.fields.ID,
-				Title:   tt.fields.Title,
-				SoldOut: tt.fields.SoldOut,
-			}
-			if got := b.GetEntity(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("BookEntity.GetEntity() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+// func TestBookEntity_GetEntity(t *testing.T) {
+// 	type fields struct {
+// 		ID      uint
+// 		Title   string
+// 		SoldOut bool
+// 	}
+// 	tests := []struct {
+// 		name   string
+// 		fields fields
+// 		want   BookEntity
+// 	}{
+// 		{
+// 			name: "Book Not Available",
+// 			fields: fields{
+// 				ID:      1,
+// 				Title:   "Book 1",
+// 				SoldOut: true,
+// 			},
+// 			want: BookEntity{
+// 				ID:      1,
+// 				Title:   "Book 1",
+// 				SoldOut: true,
+// 			},
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			b := &BookEntity{
+// 				ID:      tt.fields.ID,
+// 				Title:   tt.fields.Title,
+// 				SoldOut: tt.fields.SoldOut,
+// 			}
+// 			if got := b.GetEntity(); !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("BookEntity.GetEntity() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }

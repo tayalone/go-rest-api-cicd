@@ -26,6 +26,6 @@ func (b *BookEntity) IsAvailable() bool {
 
 }
 
-func (b *BookEntity) GetEntity() BookEntity {
-	return *b
-}
+// func (b *BookEntity) GetEntity() BookEntity {
+// 	return *b
+// }
