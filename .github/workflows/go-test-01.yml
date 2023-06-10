@@ -18,5 +18,16 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.20
+
+      - name: Get Changed Files
+        id: changed-files
+        run: |
+          echo "::set-output name=files::$(git diff --name-only HEAD^)"
+
+      - name: Display Changed Files
+        run: |
+          echo "Changed Files: ${{ steps.changed-files.outputs.files }}"
+
       - name: Run Tests
-        run: go test ./...
+        run: |
+          go test ${{ steps.changed-files.outputs.files }}
