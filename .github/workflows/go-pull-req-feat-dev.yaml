@@ -37,9 +37,9 @@ jobs:
           echo "....."
           echo "::set-output name=files::$changed_files"
       
-      # - name: Echo changed files
-      #   run: |
-      #     echo "Changed files: ${{ steps.list_files.outputs.files }}"    
+      - name: Echo changed files
+        run: |
+          echo "Changed files: ${{ steps.list_files.outputs.files }}"    
     
       # - name: Filter Go test files
       #   id: filter_go_files
