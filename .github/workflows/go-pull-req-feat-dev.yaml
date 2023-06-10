@@ -21,11 +21,11 @@ jobs:
         run: go get .
 
       - name: List changed files
-        id: file_changes
         run: |
-          git fetch origin ${{ github.base_ref }}
-          changedFiles=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }})
-          echo "Changed files: $changedFiles"
+          api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
+          changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
+          echo "Changed files:"
+          echo "$changed_files"
 
       - name: Build
         run: go build -v ./...
