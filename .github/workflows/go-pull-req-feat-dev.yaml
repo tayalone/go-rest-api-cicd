@@ -32,6 +32,7 @@ jobs:
         run: |
           api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
           changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
+          echo "$changed_files"
           echo "::set-output name=files::$changed_files"
       
       - name: Echo changed files
