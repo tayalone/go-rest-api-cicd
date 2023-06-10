@@ -19,13 +19,13 @@ jobs:
 
       - name: Install dependencies
         run: go get .
-      
-      - name: Check modified files
+
+      - name: List changed files
         id: file_changes
         run: |
-          changedFiles=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }})
-          goFiles=$(echo "$changedFiles" | grep -E '\.go$')
-          echo "Changed Go files: $goFiles"
+          git fetch origin ${{ github.base_ref }}
+          changedFiles=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }})
+          echo "Changed files: $changedFiles"
 
       - name: Build
         run: go build -v ./...
