@@ -24,8 +24,6 @@ jobs:
           echo "Changed files:"
           echo "$changed_files"
           IFS=$'\n' read -rd '' -a changed_files_array <<< "$changed_files"
-          echo "::set-output name=files::${changed_files_array[@]}"
-
       # - name: Install dependencies
       #   run: go get .
 
