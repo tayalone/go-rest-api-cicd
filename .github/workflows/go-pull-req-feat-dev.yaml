@@ -70,6 +70,15 @@ jobs:
   
       - name: List all changed files
         run: |
+          pattern=".*_test\.go"
+          files=()
           for file in ${{ steps.file-changes.outputs.all_changed_files }}; do
-            echo "$file was changed"
+            if [[ $file =~ $pattern ]]; then
+              dir=$(dirname "$v")
+              dir=${dir#/}
+              dir="./$dir"
+              files+=("$dir")
+            fi
           done
+          testingFile=$(IFS=' '; echo "${files[*]}")
+          echo "$testingFile"
