@@ -31,9 +31,21 @@ jobs:
           changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
           echo "Changed files:"
           IFS=$'\n'
+          pattern=".*_test\.go"
+          files=()
           for file in $changed_files; do
-            echo "xxx $file"
+            if [[ $file =~ $pattern ]]; then
+                dir=$(dirname "$file")
+                dir=${dir#/}
+                dir="./$dir"
+                files+=("$dir")
+            fi
           done
+          testingDir=$(IFS=' '; echo "${files[*]}")
+          echo "TESTING_DIR=$testingDir" >> "$GITHUB_OUTPUT"  
+
+      - name: Get Testing Dir
+        run: echo "Testing file ${{ steps.list_files.outputs.TESTING_DIR }}"  
 
           
       # - name: Install dependencies
