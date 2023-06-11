@@ -69,18 +69,22 @@ jobs:
           compareWith: develop
   
       - name: List all changed files
+        id: list-all-changed-files
         run: |
           pattern=".*_test\.go"
           files=()
           for file in ${{ steps.file-changes.outputs.all_changed_files }}; do
             if [[ $file =~ $pattern ]]; then
-                echo "$file"
                 dir=$(dirname "$file")
                 dir=${dir#/}
                 dir="./$dir"
-                echo "$dir"
                 files+=("$dir")
             fi
           done
           testingFile=$(IFS=' '; echo "${files[*]}")
-          echo "$testingFile"
+          echo "::set-output name=testingFile::$testingFile"
+
+      - name: Print Testing Dir
+        run: |
+          echo "Testing directory: ${{ steps.list-all-changed-files.outputs.testingFile }}"
+    
