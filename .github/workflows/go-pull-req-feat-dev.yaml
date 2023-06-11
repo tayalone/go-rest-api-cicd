@@ -32,7 +32,7 @@ jobs:
           echo "Changed files:"
           IFS=$'\n'
           for file in $changed_files; do
-            echo "$file"
+            echo "xxx $file"
           done
 
           
