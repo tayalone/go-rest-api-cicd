@@ -30,7 +30,11 @@ jobs:
           api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
           changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
           echo "Changed files:"
-          echo "$changed_files"
+          IFS=$'\n'
+          for file in $changed_files; do
+            echo "$file"
+          done
+
           
       # - name: Install dependencies
       #   run: go get .
