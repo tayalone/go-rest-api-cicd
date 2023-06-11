@@ -68,8 +68,13 @@ jobs:
         with:
           compareWith: develop
 
-      - name: Display File Changes
+      # - name: Display File Changes
+      #   run: |
+      #     echo "Added files: ${{ steps.file-changes.outputs.added }}"
+      #     echo "Modified files: ${{ steps.file-changes.outputs.modified }}"
+      #     echo "Deleted files: ${{ steps.file-changes.outputs.deleted }}"      
+      - name: List all changed files
         run: |
-          echo "Added files: ${{ steps.file-changes.outputs.added }}"
-          echo "Modified files: ${{ steps.file-changes.outputs.modified }}"
-          echo "Deleted files: ${{ steps.file-changes.outputs.deleted }}"      
+          for file in ${{ steps.file-changes.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
