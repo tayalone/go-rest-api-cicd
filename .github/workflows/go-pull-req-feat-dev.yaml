@@ -74,9 +74,11 @@ jobs:
           files=()
           for file in ${{ steps.file-changes.outputs.all_changed_files }}; do
             if [[ $file =~ $pattern ]]; then
+              echo "$file"
               dir=$(dirname "$v")
               dir=${dir#/}
               dir="./$dir"
+              echo "$dir"
               files+=("$dir")
             fi
           done
