@@ -1,37 +1,37 @@
-name: Go Unit Test
+# name: Go Unit Test
 
-on:
-  pull_request:
-    branches:
-      - develop
+# on:
+#   pull_request:
+#     branches:
+#       - develop
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.20'
+#       - name: Setup Go
+#         uses: actions/setup-go@v4
+#         with:
+#           go-version: '1.20'
 
-      - name: Set color
-        id: random-color-generator
-        run: echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
-      - name: Get color
+      # - name: Set color
+      #   id: random-color-generator
+      #   run: echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
+        
+      # - name: Get color
+      #   run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
 
-        run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
-
-      - name: List changed files
-        id: list_files
-        run: |
-          api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
-          changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
-          echo "Changed files:"
-          echo "$changed_files"
-          IFS=$'\n' read -rd '' -a changed_files_array <<< "$changed_files"
+      # - name: List changed files
+      #   id: list_files
+      #   run: |
+      #     api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
+      #     changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
+      #     echo "Changed files:"
+      #     echo "$changed_files"
+      #     IFS=$'\n' read -rd '' -a changed_files_array <<< "$changed_files"
       # - name: Install dependencies
       #   run: go get .
 
@@ -46,3 +46,30 @@ jobs:
       #   with:
       #     file: coverage_dev.txt
       #     token: ${{ secrets.CODECOV_TOKEN }}
+
+
+name: Get File Changes
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  file-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get File Changes
+        uses: tj-actions/changed-files@v36
+        id: file-changes
+        with:
+          compareWith: develop
+
+      - name: Display File Changes
+        run: |
+          echo "Added files: ${{ steps.file-changes.outputs.added }}"
+          echo "Modified files: ${{ steps.file-changes.outputs.modified }}"
+          echo "Deleted files: ${{ steps.file-changes.outputs.deleted }}"      
