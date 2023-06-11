@@ -70,13 +70,6 @@ jobs:
   
       - name: List all changed files
         run: |
-          for file in "${{ steps.file-changes.outputs.all_changed_files }}"; do
-            if [[ $file == *_test.go ]]; then
-              file=${file%/*}   # Remove "/book_test.go" portion
-              echo "Changed file: $file"
-              if [[ ! "${changed_files[*]}" =~ $file ]]; then
-                changed_files+=("$file")  # Add unique file path to array
-              fi
-            fi
+          for file in ${{ steps.file-changes.outputs.all_changed_files }}; do
+            echo "$file was changed"
           done
-          echo "$changed_files"
