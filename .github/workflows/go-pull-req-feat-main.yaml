@@ -1,0 +1,61 @@
+name: Unit Test Feature/* to Main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: List changed files
+        id: list_files
+        run: |
+          api_url=$(jq -r .pull_request.url $GITHUB_EVENT_PATH)
+          changed_files=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $api_url/files | jq -r '.[].filename')
+          echo "Changed files:"
+          IFS=$'\n'
+          pattern=".*_test\.go"
+          files=()
+          for file in $changed_files; do
+            if [[ $file =~ $pattern ]]; then
+                dir=$(dirname "$file")
+                dir=${dir#/}
+                dir="./$dir"
+                files+=("$dir")
+            fi
+          done
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No test files found. Ending pipeline."
+            exit 0
+          fi
+          testingDir=$(IFS=' '; echo "${files[*]}")
+          echo "TESTING_DIR=$testingDir" >> "$GITHUB_OUTPUT"  
+
+      - name: Get Testing Dir
+        run: echo "Testing dir ${{ steps.list_files.outputs.TESTING_DIR }}"  
+
+          
+      - name: Install dependencies
+        run: go get .
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test with Coverage
+        run: go test -v -coverprofile=coverage_main.txt -covermode=atomic ${{ steps.list_files.outputs.TESTING_DIR }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage_main.txt
+          token: ${{ secrets.CODECOV_TOKEN }}
