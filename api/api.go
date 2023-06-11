@@ -11,9 +11,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	BooksRoute "github.com/tayalone/go-rest-api-cicd/api/books"
 	"github.com/tayalone/go-rest-api-cicd/book/port"
-	// BooksRoute "github.com/tayalone/go-rest-api-cicd-private/api/books"
-	// "github.com/tayalone/go-rest-api-cicd-private/book/port"
 )
 
 // API interface
@@ -34,7 +33,7 @@ func Initialize(bookUseCase port.Usecase) API {
 		})
 	})
 
-	// BooksRoute.Setup(r, bookUseCase)
+	BooksRoute.Setup(r, bookUseCase)
 
 	newAPI := &api{
 		Engine: r,
@@ -44,6 +43,7 @@ func Initialize(bookUseCase port.Usecase) API {
 }
 
 func (a *api) Start() {
+	// force port run @ 8081
 	str := ":" + strconv.FormatUint(uint64(8081), 10)
 
 	quit := make(chan os.Signal, 1)
